@@ -3,6 +3,8 @@
 #include <iostream>
 #include <cstdlib>
 #include <ostream>
+#include <cctype>
+#include <string>
 #include <termios.h>
 #include <unistd.h>
 #include "datetime.cpp"
@@ -22,6 +24,7 @@ std::string transcolor[5] = {
     "\033[38;2;246;170;183m\033[48;2;246;170;183m",
     "\033[38;2;85;205;253m\033[48;2;85;205;253m"
 };
+std::string normalColor = "\033[92;102m";
 int spaceCount = 0;
 int returnCount = 0;
 bool showonce = false;
@@ -49,6 +52,7 @@ int main(int argc, char** argv) {
                 std::cout << "    C: center the clock" << std::endl;
                 std::cout << "    M: Locate the clock at topleft" << std::endl;
                 std::cout << "    S: show/unshow the second" << std::endl;
+                std::cout << "    E: Change color" << std::endl;
                 return 0;
             case 's':
                 showSecond = true;
@@ -75,18 +79,18 @@ int main(int argc, char** argv) {
                 for (int space = 0; space < spaceCount; ++space)
                     console.Write(' ');
             }
-            showNumber(dt.getTime().hour / 10, j, (transcount != 5) ? "\033[92;102m" : transcolor[j]);
+            showNumber(dt.getTime().hour / 10, j, (transcount != 5) ? normalColor : transcolor[j]);
             console.Write("\033[0m  ");
-            showNumber(dt.getTime().hour % 10, j, (transcount != 5) ? "\033[92;102m" : transcolor[j]);
-            console.Write(((j == 1) || (j == 3)) ? ("\033[0m  " + ((transcount != 5) ? "\033[92;102m" : transcolor[j]) + "  \033[0m  ") : ("\033[0m      "));
-            showNumber(dt.getTime().minute / 10, j, (transcount != 5) ? "\033[92;102m" : transcolor[j]);
+            showNumber(dt.getTime().hour % 10, j, (transcount != 5) ? normalColor : transcolor[j]);
+            console.Write(((j == 1) || (j == 3)) ? ("\033[0m  " + ((transcount != 5) ? normalColor : transcolor[j]) + "  \033[0m  ") : ("\033[0m      "));
+            showNumber(dt.getTime().minute / 10, j, (transcount != 5) ? normalColor : transcolor[j]);
             console.Write("\033[0m  ");
-            showNumber(dt.getTime().minute % 10, j, (transcount != 5) ? "\033[92;102m" : transcolor[j]);
+            showNumber(dt.getTime().minute % 10, j, (transcount != 5) ? normalColor : transcolor[j]);
             if (showSecond) {
-                console.Write(((j == 1) || (j == 3)) ? ("\033[0m  " + ((transcount != 5) ? "\033[92;102m" : transcolor[j]) + "  \033[0m  ") : ("\033[0m      "));
-                showNumber(dt.getTime().second / 10, j, (transcount != 5) ? "\033[92;102m" : transcolor[j]);
+                console.Write(((j == 1) || (j == 3)) ? ("\033[0m  " + ((transcount != 5) ? normalColor : transcolor[j]) + "  \033[0m  ") : ("\033[0m      "));
+                showNumber(dt.getTime().second / 10, j, (transcount != 5) ? normalColor : transcolor[j]);
                 console.Write("\033[0m  ");
-                showNumber(dt.getTime().second % 10, j, (transcount != 5) ? "\033[92;102m" : transcolor[j]);
+                showNumber(dt.getTime().second % 10, j, (transcount != 5) ? normalColor : transcolor[j]);
                 console.Write("\033[0m  ");
             }
             console.WriteLine("\033[0m");
@@ -103,6 +107,26 @@ int main(int argc, char** argv) {
                     spaceCount = (b.width - clockwidth) / 2;
                     returnCount = (b.height - 5) / 2;
                     break;
+                }
+                case 'e': {
+                    system("clear");
+                    std::cout << "\033[0mSelect color:" << std::endl;
+                    std::cout << "\033[40m 0\033[41m 1\033[42m 2\033[43m 3\033[44m 4\033[45m 5\033[46m 6\033[47m 7" << std::endl;
+                    std::cout << "\033[100m 8\033[101m 9\033[102m A\033[103m B\033[104m C\033[105m D\033[106m E\033[107m F" << std::endl;
+                    std::cout << "\033[0m" << std::endl;
+                    again:
+                    while (!console.kbhit());
+                    char t = console.getKey();
+                    if ((t >= '0') && (t <= '7'))
+                        normalColor = "\033[" + std::to_string(((int)t) - 0x30 + 40) + ";" + std::to_string(((int)t) - 0x30 + 30) + "m";
+                    else if (t == '8')
+                        normalColor = "\033[90;100m";
+                    else if (t == '9')
+                        normalColor = "\033[91;101m";
+                    else if ((std::tolower(t) >= 'a') && (std::tolower(t) <= 'f'))
+                        normalColor = "\033[" + std::to_string(((int)t) - 0x61 + 92) + ";" + std::to_string(((int)t) - 0x61 + 102) + "m";
+                    else
+                        goto again;
                 }
                 case 'm':
                     spaceCount = 0;

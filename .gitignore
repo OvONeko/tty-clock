@@ -40,3 +40,5 @@
 [Oo]bj/
 [Oo]utput/
 [Bb]uild/
+.cache
+[Cc]ache
