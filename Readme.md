@@ -4,11 +4,12 @@
 Show a clock in your tty.  
 ```
 usage: tty-clock [-hsc1] [-C Color]
-    -h show this oage
-    -s show second
-    -c center the clock when start
-    -1 show once
-    -C <Color> Change Color: 0~F
+    -h         show this oage
+    -s         show second
+    -c         center the clock when start
+    -1         show once
+    -C Color   change color: 0~F
+    -S         screen saver mode
 
 keyboard shortcuts:
     Q: quit tty-clock
