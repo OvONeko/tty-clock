@@ -38,14 +38,15 @@ int main(int argc, char** argv) {
         console.WriteLine("Too small console!");
         return 233;
     }
-    while ((opt = getopt(argc, argv, "hsc1")) != -1) {
+    while ((opt = getopt(argc, argv, "hsc1C:")) != -1) {
         switch (opt) {
             case 'h':
-                std::cout << "usage: tty-clock [-hsc1]" << std::endl;
+                std::cout << "usage: tty-clock [-hsc1] [-C Color]" << std::endl;
                 std::cout << "    -h show this oage" << std::endl;
                 std::cout << "    -s show second" << std::endl;
                 std::cout << "    -c center the clock when start" << std::endl;
-                std::cout << "    -1 show once\n" << std::endl;
+                std::cout << "    -1 show once" << std::endl;
+                std::cout << "    -C <Color> Change Color: 0~F" << std::endl << std::endl;
                 std::cout << "keyboard shortcuts:" <<std::endl;
                 std::cout << "    Q: quit tty-clock" << std::endl;
                 std::cout << "    C: center the clock" << std::endl;
@@ -61,6 +62,22 @@ int main(int argc, char** argv) {
                 int clockwidth = showSecond ? 54 : 38;
                 spaceCount = (b.width - clockwidth) / 2;
                 returnCount = (b.height - 5) / 2;
+                break;
+            }
+            case 'C': {
+                char t = optarg[0];
+                if ((t >= '0') && (t <= '7'))
+                    normalColor = "\033[" + std::to_string(((int)t) - 0x30 + 40) + ";" + std::to_string(((int)t) - 0x30 + 30) + "m";
+                else if (t == '8')
+                    normalColor = "\033[90;100m";
+                else if (t == '9')
+                    normalColor = "\033[91;101m";
+                else if ((std::tolower(t) >= 'a') && (std::tolower(t) <= 'f'))
+                    normalColor = "\033[" + std::to_string(((int)t) - 0x61 + 92) + ";" + std::to_string(((int)t) - 0x61 + 102) + "m";
+                else {
+                    std::cout << "Invalid Color:" << optarg;
+                    return 8;
+                }
                 break;
             }
             case '1':
@@ -110,8 +127,10 @@ int main(int argc, char** argv) {
                 case 'e': {
                     system("clear");
                     std::cout << "\033[0mSelect color:" << std::endl;
-                    std::cout << "\033[40m 0\033[41m 1\033[42m 2\033[43m 3\033[44m 4\033[45m 5\033[46m 6\033[47m 7" << std::endl;
-                    std::cout << "\033[100m 8\033[101m 9\033[102m A\033[103m B\033[104m C\033[105m D\033[106m E\033[107m F" << std::endl;
+                    std::cout << "\033[40m    \033[41m    \033[42m    \033[43m    \033[44m    \033[45m    \033[46m    \033[47m    " << std::endl;
+                    std::cout << "\033[40m   0\033[41m   1\033[42m   2\033[43m   3\033[44m   4\033[45m   5\033[46m   6\033[47m   7" << std::endl;
+                    std::cout << "\033[100m    \033[101m    \033[102m    \033[103m    \033[104m    \033[105m    \033[106m    \033[107m    " << std::endl;
+                    std::cout << "\033[100m   8\033[101m   9\033[102m   A\033[103m   B\033[104m   C\033[105m   D\033[106m   E\033[107m   F" << std::endl;
                     std::cout << "\033[0m" << std::endl;
                     again:
                     while (!console.kbhit());
