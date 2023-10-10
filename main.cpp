@@ -27,6 +27,7 @@ std::string normalColor = "\033[92;102m";
 int spaceCount = 0;
 int returnCount = 0;
 bool showonce = false;
+bool screensaver = false;
 
 int main(int argc, char** argv) {
     DateTime dt;
@@ -38,15 +39,16 @@ int main(int argc, char** argv) {
         console.WriteLine("Too small console!");
         return 233;
     }
-    while ((opt = getopt(argc, argv, "hsc1C:")) != -1) {
+    while ((opt = getopt(argc, argv, "hsc1SC:")) != -1) {
         switch (opt) {
             case 'h':
                 std::cout << "usage: tty-clock [-hsc1] [-C Color]" << std::endl;
-                std::cout << "    -h show this oage" << std::endl;
-                std::cout << "    -s show second" << std::endl;
-                std::cout << "    -c center the clock when start" << std::endl;
-                std::cout << "    -1 show once" << std::endl;
-                std::cout << "    -C <Color> Change Color: 0~F" << std::endl << std::endl;
+                std::cout << "    -h         show this oage" << std::endl;
+                std::cout << "    -s         show second" << std::endl;
+                std::cout << "    -c         center the clock when start" << std::endl;
+                std::cout << "    -1         show once" << std::endl;
+                std::cout << "    -C Color   change color: 0~F" << std::endl;
+                std::cout << "    -S         screen saver mode" << std::endl << std::endl;
                 std::cout << "keyboard shortcuts:" <<std::endl;
                 std::cout << "    Q: quit tty-clock" << std::endl;
                 std::cout << "    C: center the clock" << std::endl;
@@ -73,13 +75,16 @@ int main(int argc, char** argv) {
                 else if (t == '9')
                     normalColor = "\033[91;101m";
                 else if ((std::tolower(t) >= 'a') && (std::tolower(t) <= 'f'))
-                    normalColor = "\033[" + std::to_string(((int)t) - 0x61 + 92) + ";" + std::to_string(((int)t) - 0x61 + 102) + "m";
+                    normalColor = "\033[" + std::to_string(((int)std::tolower(t)) - 0x61 + 92) + ";" + std::to_string(((int)std::tolower(t)) - 0x61 + 102) + "m";
                 else {
                     std::cout << "Invalid Color:" << optarg;
                     return 8;
                 }
                 break;
             }
+            case 'S':
+                screensaver = true;
+                break;
             case '1':
                 showonce = true;
         }
@@ -112,6 +117,8 @@ int main(int argc, char** argv) {
             console.WriteLine("\033[0m");
         }
         if (console.kbhit()) {
+            if (screensaver)
+                return 0;
             char c = console.getKey();
             switch (c) {
                 case 'a':
@@ -142,7 +149,7 @@ int main(int argc, char** argv) {
                     else if (t == '9')
                         normalColor = "\033[91;101m";
                     else if ((std::tolower(t) >= 'a') && (std::tolower(t) <= 'f'))
-                        normalColor = "\033[" + std::to_string(((int)t) - 0x61 + 92) + ";" + std::to_string(((int)t) - 0x61 + 102) + "m";
+                        normalColor = "\033[" + std::to_string(((int)std::tolower(t)) - 0x61 + 92) + ";" + std::to_string(((int)std::tolower(t)) - 0x61 + 102) + "m";
                     else
                         goto again;
                 }
