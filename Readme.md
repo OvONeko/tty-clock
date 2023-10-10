@@ -14,4 +14,5 @@ keyboard shortcuts:
     C: center the clock
     M: Locate the clock at topleft
     S: show/unshow the clock
+    E: Change color
 ```
