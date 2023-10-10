@@ -30,3 +30,13 @@
 *.exe
 *.out
 *.app
+
+# Editors
+.idea
+.vs
+.vscode
+[Bb]in/
+[Oo]ut/
+[Oo]bj/
+[Oo]utput/
+[Bb]uild/
