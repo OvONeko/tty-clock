@@ -17,6 +17,7 @@
 bool showSecond = false;
 int transcount = 0;
 int tick = 1000;
+int ns = 0;
 std::string transcolor[5] = {
     "\033[38;2;85;205;253m\033[48;2;85;205;253m",
     "\033[38;2;246;170;183m\033[48;2;246;170;183m",
@@ -69,17 +70,19 @@ int main(int argc, char** argv) {
         console.WriteLine("Too small console!");
         return 233;
     }
-    while ((opt = getopt(argc, argv, "hsc1SC:t:")) != -1) {
+    while ((opt = getopt(argc, argv, "hsc1SC:t:a:")) != -1) {
         switch (opt) {
             case 'h':
-                std::cout << "usage: tty-clock [-hsc1S] [-C Color] [-t ticks]" << std::endl;
+                std::cout << "usage: tty-clock [-hsc1S] [-C Color] [-t ticks] [-a nsticks]" << std::endl;
                 std::cout << "    -h         show this oage" << std::endl;
                 std::cout << "    -s         show second" << std::endl;
                 std::cout << "    -c         center the clock when start" << std::endl;
                 std::cout << "    -1         show once" << std::endl;
                 std::cout << "    -C Color   change color: 0~F" << std::endl;
                 std::cout << "    -S         screen saver mode" << std::endl;
-                std::cout << "    -t ticks   set the delay between refresh (default:1000 ms)" << std::endl << std::endl;
+                std::cout << "    -t ticks   set the delay between refresh (default:1000 ms)" << std::endl;
+                std::cout << "    -a nsticks set the delay between refresh (microsecond, add to -t ticks)" << std::endl;
+                std::cout << std::endl;
                 std::cout << "keyboard shortcuts:" <<std::endl;
                 std::cout << "    Q: quit tty-clock" << std::endl;
                 std::cout << "    C: center the clock" << std::endl;
@@ -94,7 +97,7 @@ int main(int argc, char** argv) {
                 b = console.getConsoleBox();
                 int clockwidth = showSecond ? 54 : 38;
                 spaceCount = (b.width - clockwidth) / 2;
-                returnCount = (b.height - 5) / 2;
+                returnCount = (b.height - 6) / 2;
                 break;
             }
             case 'C': {
@@ -107,6 +110,9 @@ int main(int argc, char** argv) {
                 break;
             case 't': 
                 tick = atoi(optarg);
+                break;
+            case 'a':
+                ns = atoi(optarg);
                 break;
             case '1':
                 showonce = true;
@@ -158,7 +164,7 @@ int main(int argc, char** argv) {
                     b = console.getConsoleBox();
                     int clockwidth = showSecond ? 54 : 38;
                     spaceCount = (b.width - clockwidth) / 2;
-                    returnCount = (b.height - 5) / 2;
+                    returnCount = (b.height - 6) / 2;
                     break;
                 }
                 case 'e': {
@@ -198,7 +204,7 @@ int main(int argc, char** argv) {
         }
         if (showonce) break;
         dt.Now();
-        usleep(tick * 1000);
+        usleep(tick * 1000 + ns);
     }
     return 0;
 }
