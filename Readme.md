@@ -3,7 +3,7 @@
 
 Show a clock in your tty.  
 ```
-usage: tty-clock [-hsc1] [-C Color]
+usage: tty-clock [-hsc1Sb] [-C Color] [-t ticks] [-a nsticks]
     -h         show this oage
     -s         show second
     -c         center the clock when start
@@ -11,6 +11,8 @@ usage: tty-clock [-hsc1] [-C Color]
     -C Color   change color: 0~F
     -S         screen saver mode
     -t ticks   set the delay between refresh (default:1000 ms)
+    -a nsticks set the delay between refresh (microsecond, add to -t ticks)
+    -b         enable blinking
 
 keyboard shortcuts:
     Q: quit tty-clock
