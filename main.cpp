@@ -24,11 +24,40 @@ std::string transcolor[5] = {
     "\033[38;2;246;170;183m\033[48;2;246;170;183m",
     "\033[38;2;85;205;253m\033[48;2;85;205;253m"
 };
+std::string transdatecolor[5] = {
+    "\033[38;2;85;205;253m",
+    "\033[38;2;246;170;183m",
+    "\033[38;2;255;255;255m"
+};
 std::string normalColor = "\033[92;102m";
+std::string dateColor = "\033[0m\033[92m";
 int spaceCount = 0;
 int returnCount = 0;
 bool showonce = false;
 bool screensaver = false;
+
+bool setColor(char t) {
+    if ((t >= '0') && (t <= '7')){
+        normalColor = "\033[" + std::to_string(((int)t) - 0x30 + 40) + ";" + std::to_string(((int)t) - 0x30 + 30) + "m";
+        dateColor = "\033[0m\033[" + std::to_string(((int)t) - 0x30 + 30) + "m";
+    }
+    else if (t == '8'){
+        normalColor = "\033[90;100m";
+        dateColor = "\033[0m\033[90m";
+    }
+    else if (t == '9'){
+        normalColor = "\033[91;101m";
+        dateColor = "\033[0m\033[91m";
+    }
+    else if ((std::tolower(t) >= 'a') && (std::tolower(t) <= 'f')){
+        normalColor = "\033[" + std::to_string(((int)std::tolower(t)) - 0x61 + 92) + ";" + std::to_string(((int)std::tolower(t)) - 0x61 + 102) + "m";
+        dateColor = "\033[0m\033[" + std::to_string(((int)std::tolower(t)) - 0x61 + 92) + "m";
+    }
+    else {
+        return false;
+    }
+    return true;
+}
 
 int main(int argc, char** argv) {
     DateTime dt;
@@ -36,14 +65,14 @@ int main(int argc, char** argv) {
     Box b = console.getConsoleBox();
     int opt = 0;
     console.HideEcho();
-    if ((b.height < 5) || (b.width < 39)) {
+    if ((b.height < 6) || (b.width < 39)) {
         console.WriteLine("Too small console!");
         return 233;
     }
     while ((opt = getopt(argc, argv, "hsc1SC:t:")) != -1) {
         switch (opt) {
             case 'h':
-                std::cout << "usage: tty-clock [-hsc1] [-C Color]" << std::endl;
+                std::cout << "usage: tty-clock [-hsc1S] [-C Color] [-t ticks]" << std::endl;
                 std::cout << "    -h         show this oage" << std::endl;
                 std::cout << "    -s         show second" << std::endl;
                 std::cout << "    -c         center the clock when start" << std::endl;
@@ -69,19 +98,8 @@ int main(int argc, char** argv) {
                 break;
             }
             case 'C': {
-                char t = optarg[0];
-                if ((t >= '0') && (t <= '7'))
-                    normalColor = "\033[" + std::to_string(((int)t) - 0x30 + 40) + ";" + std::to_string(((int)t) - 0x30 + 30) + "m";
-                else if (t == '8')
-                    normalColor = "\033[90;100m";
-                else if (t == '9')
-                    normalColor = "\033[91;101m";
-                else if ((std::tolower(t) >= 'a') && (std::tolower(t) <= 'f'))
-                    normalColor = "\033[" + std::to_string(((int)std::tolower(t)) - 0x61 + 92) + ";" + std::to_string(((int)std::tolower(t)) - 0x61 + 102) + "m";
-                else {
-                    std::cout << "Invalid Color:" << optarg;
+                if (!setColor(optarg[0]))
                     return 8;
-                }
                 break;
             }
             case 'S':
@@ -121,6 +139,13 @@ int main(int argc, char** argv) {
             }
             console.WriteLine("\033[0m");
         }
+        if (spaceCount) {
+            for (int space = 0; space < spaceCount; ++space)
+                console.Write(' ');
+        }
+        for (int i = 0; i < (showSecond ? 22 : 12); ++i) 
+            console.Write(" ");
+        console.WriteLine(((transcount != 5) ? dateColor : (transdatecolor[dt.getTime().second % 3])) + std::to_string(dt.getDate().year) + "/" + (((dt.getDate().month + 1 >= 10) ? "" : "0") + std::to_string(dt.getDate().month + 1)) + "/" + (((dt.getDate().day >= 10) ? "" : "0") + std::to_string(dt.getDate().day)) + "\033[0m");
         if (console.kbhit()) {
             if (screensaver)
                 return 0;
@@ -144,19 +169,9 @@ int main(int argc, char** argv) {
                     std::cout << "\033[100m    \033[101m    \033[102m    \033[103m    \033[104m    \033[105m    \033[106m    \033[107m    " << std::endl;
                     std::cout << "\033[100m   8\033[101m   9\033[102m   A\033[103m   B\033[104m   C\033[105m   D\033[106m   E\033[107m   F" << std::endl;
                     std::cout << "\033[0m" << std::endl;
-                    again:
-                    while (!console.kbhit());
-                    char t = console.getKey();
-                    if ((t >= '0') && (t <= '7'))
-                        normalColor = "\033[" + std::to_string(((int)t) - 0x30 + 40) + ";" + std::to_string(((int)t) - 0x30 + 30) + "m";
-                    else if (t == '8')
-                        normalColor = "\033[90;100m";
-                    else if (t == '9')
-                        normalColor = "\033[91;101m";
-                    else if ((std::tolower(t) >= 'a') && (std::tolower(t) <= 'f'))
-                        normalColor = "\033[" + std::to_string(((int)std::tolower(t)) - 0x61 + 92) + ";" + std::to_string(((int)std::tolower(t)) - 0x61 + 102) + "m";
-                    else
-                        goto again;
+                    do {
+                        while (!console.kbhit());
+                    } while (!setColor(console.getKey()));
                 }
                 case 'm':
                     spaceCount = 0;
