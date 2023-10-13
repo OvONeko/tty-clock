@@ -16,6 +16,7 @@
 
 bool showSecond = false;
 int transcount = 0;
+int tick = 1000;
 std::string transcolor[5] = {
     "\033[38;2;85;205;253m\033[48;2;85;205;253m",
     "\033[38;2;246;170;183m\033[48;2;246;170;183m",
@@ -39,7 +40,7 @@ int main(int argc, char** argv) {
         console.WriteLine("Too small console!");
         return 233;
     }
-    while ((opt = getopt(argc, argv, "hsc1SC:")) != -1) {
+    while ((opt = getopt(argc, argv, "hsc1SC:t:")) != -1) {
         switch (opt) {
             case 'h':
                 std::cout << "usage: tty-clock [-hsc1] [-C Color]" << std::endl;
@@ -48,7 +49,8 @@ int main(int argc, char** argv) {
                 std::cout << "    -c         center the clock when start" << std::endl;
                 std::cout << "    -1         show once" << std::endl;
                 std::cout << "    -C Color   change color: 0~F" << std::endl;
-                std::cout << "    -S         screen saver mode" << std::endl << std::endl;
+                std::cout << "    -S         screen saver mode" << std::endl;
+                std::cout << "    -t ticks   set the delay between refresh (default:1000 ms)" << std::endl << std::endl;
                 std::cout << "keyboard shortcuts:" <<std::endl;
                 std::cout << "    Q: quit tty-clock" << std::endl;
                 std::cout << "    C: center the clock" << std::endl;
@@ -84,6 +86,9 @@ int main(int argc, char** argv) {
             }
             case 'S':
                 screensaver = true;
+                break;
+            case 't': 
+                tick = atoi(optarg);
                 break;
             case '1':
                 showonce = true;
@@ -178,7 +183,7 @@ int main(int argc, char** argv) {
         }
         if (showonce) break;
         dt.Now();
-        sleep(1);
+        usleep(tick * 1000);
     }
     return 0;
 }

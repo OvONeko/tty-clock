@@ -10,6 +10,7 @@ usage: tty-clock [-hsc1] [-C Color]
     -1         show once
     -C Color   change color: 0~F
     -S         screen saver mode
+    -t ticks   set the delay between refresh (default:1000 ms)
 
 keyboard shortcuts:
     Q: quit tty-clock
