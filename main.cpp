@@ -36,6 +36,7 @@ int spaceCount = 0;
 int returnCount = 0;
 bool showonce = false;
 bool screensaver = false;
+bool blinking = false;
 
 bool setColor(char t) {
     if ((t >= '0') && (t <= '7')){
@@ -70,10 +71,10 @@ int main(int argc, char** argv) {
         console.WriteLine("Too small console!");
         return 233;
     }
-    while ((opt = getopt(argc, argv, "hsc1SC:t:a:")) != -1) {
+    while ((opt = getopt(argc, argv, "hsc1SC:t:a:b")) != -1) {
         switch (opt) {
             case 'h':
-                std::cout << "usage: tty-clock [-hsc1S] [-C Color] [-t ticks] [-a nsticks]" << std::endl;
+                std::cout << "usage: tty-clock [-hsc1Sb] [-C Color] [-t ticks] [-a nsticks]" << std::endl;
                 std::cout << "    -h         show this oage" << std::endl;
                 std::cout << "    -s         show second" << std::endl;
                 std::cout << "    -c         center the clock when start" << std::endl;
@@ -82,6 +83,7 @@ int main(int argc, char** argv) {
                 std::cout << "    -S         screen saver mode" << std::endl;
                 std::cout << "    -t ticks   set the delay between refresh (default:1000 ms)" << std::endl;
                 std::cout << "    -a nsticks set the delay between refresh (microsecond, add to -t ticks)" << std::endl;
+                std::cout << "    -b         enable blinking" << std::endl;
                 std::cout << std::endl;
                 std::cout << "keyboard shortcuts:" <<std::endl;
                 std::cout << "    Q: quit tty-clock" << std::endl;
@@ -114,6 +116,9 @@ int main(int argc, char** argv) {
             case 'a':
                 ns = atoi(optarg);
                 break;
+            case 'b' :
+                blinking = true;
+                break;
             case '1':
                 showonce = true;
         }
@@ -132,13 +137,13 @@ int main(int argc, char** argv) {
             showNumber(dt.getTime().hour / 10, j, (transcount != 5) ? normalColor : transcolor[j]);
             console.Write("\033[0m  ");
             showNumber(dt.getTime().hour % 10, j, (transcount != 5) ? normalColor : transcolor[j]);
-            console.Write(((j == 1) || (j == 3)) ? ("\033[0m  " + ((transcount != 5) ? normalColor : transcolor[j]) + "  \033[0m  ") : ("\033[0m      "));
+            console.Write(((j == 1) || (j == 3)) ? (((!blinking) || (dt.getTime().second % 2 == 0)) ? ("\033[0m  " + ((transcount != 5) ? normalColor : transcolor[j]) + "  \033[0m  ") : ("\033[0m      ")): ("\033[0m      "));
             showNumber(dt.getTime().minute / 10, j, (transcount != 5) ? normalColor : transcolor[j]);
             console.Write("\033[0m  ");
             showNumber(dt.getTime().minute % 10, j, (transcount != 5) ? normalColor : transcolor[j]);
             if (showSecond) {
-                console.Write(((j == 1) || (j == 3)) ? ("\033[0m  " + ((transcount != 5) ? normalColor : transcolor[j]) + "  \033[0m  ") : ("\033[0m      "));
-                showNumber(dt.getTime().second / 10, j, (transcount != 5) ? normalColor : transcolor[j]);
+                console.Write(((j == 1) || (j == 3)) ? (((!blinking) || (dt.getTime().second % 2 == 0)) ? ("\033[0m  " + ((transcount != 5) ? normalColor : transcolor[j]) + "  \033[0m  ") : ("\033[0m      ")): ("\033[0m      "));
+            showNumber(dt.getTime().second / 10, j, (transcount != 5) ? normalColor : transcolor[j]);
                 console.Write("\033[0m  ");
                 showNumber(dt.getTime().second % 10, j, (transcount != 5) ? normalColor : transcolor[j]);
                 console.Write("\033[0m  ");
