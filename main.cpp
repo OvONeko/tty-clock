@@ -61,6 +61,34 @@ bool setColor(char t) {
     return true;
 }
 
+int hexCharToInt(char c) {
+    if ((c >= '0') && (c <= '9'))
+        return (c - '0');
+    if ((c >= 'A') && (c <= 'F'))
+        return (c - 'A' + 10);
+    if ((c >= 'a') && (c <= 'f'))
+        return (c - 'a' + 10);
+    return -1;
+}
+
+bool setRGBColor(char* color) {
+    unsigned int r = 0, g = 0, b = 0;
+    unsigned long rgb = 0;
+    while (*(++color)) {
+        rgb <<= 4;
+        rgb += hexCharToInt(*color);
+        std::cout << hexCharToInt(*color) << " " << std::flush;
+        if (hexCharToInt(*color) == -1)
+            return false;
+    }
+    r = (rgb >> 16) & 0xFF;
+    g = (rgb >> 8) & 0xFF;
+    b = rgb & 0xFF;
+    normalColor = "\033[38;2;" + std::to_string(r) + ";" + std::to_string(g) + ";" + std::to_string(b) + "m\033[48;2;" + std::to_string(r) + ";" + std::to_string(g) + ";" + std::to_string(b) + "m";
+    dateColor = "\033[0m\033[38;2;" + std::to_string(r) + ";" + std::to_string(g) + ";" + std::to_string(b) + "m";
+    return true;
+}
+
 int main(int argc, char** argv) {
     DateTime dt;
     Console console;
@@ -103,6 +131,11 @@ int main(int argc, char** argv) {
                 break;
             }
             case 'C': {
+                if (optarg[0] == '#') {
+                    if (!setRGBColor(optarg))
+                        return 8;
+                    break;
+                }
                 if (!setColor(optarg[0]))
                     return 8;
                 break;
