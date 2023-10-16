@@ -8,7 +8,7 @@ usage: tty-clock [-hsc1Sb] [-C Color] [-t ticks] [-a nsticks]
     -s         show second
     -c         center the clock when start
     -1         show once
-    -C Color   change color: 0~F
+    -C Color   change color: 0~F or RGB color
     -S         screen saver mode
     -t ticks   set the delay between refresh (default:1000 ms)
     -a nsticks set the delay between refresh (microsecond, add to -t ticks)

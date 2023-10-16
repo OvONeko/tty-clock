@@ -107,7 +107,7 @@ int main(int argc, char** argv) {
                 std::cout << "    -s         show second" << std::endl;
                 std::cout << "    -c         center the clock when start" << std::endl;
                 std::cout << "    -1         show once" << std::endl;
-                std::cout << "    -C Color   change color: 0~F" << std::endl;
+                std::cout << "    -C Color   change color: 0~F or RGB color" << std::endl;
                 std::cout << "    -S         screen saver mode" << std::endl;
                 std::cout << "    -t ticks   set the delay between refresh (default:1000 ms)" << std::endl;
                 std::cout << "    -a nsticks set the delay between refresh (microsecond, add to -t ticks)" << std::endl;
