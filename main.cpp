@@ -25,7 +25,7 @@ std::string transcolor[5] = {
     "\033[38;2;246;170;183m\033[48;2;246;170;183m",
     "\033[38;2;85;205;253m\033[48;2;85;205;253m"
 };
-std::string transdatecolor[5] = {
+std::string transdatecolor[3] = {
     "\033[38;2;85;205;253m",
     "\033[38;2;246;170;183m",
     "\033[38;2;255;255;255m"
@@ -77,7 +77,6 @@ bool setRGBColor(char* color) {
     while (*(++color)) {
         rgb <<= 4;
         rgb += hexCharToInt(*color);
-        std::cout << hexCharToInt(*color) << " " << std::flush;
         if (hexCharToInt(*color) == -1)
             return false;
     }
@@ -157,7 +156,8 @@ int main(int argc, char** argv) {
         }
     }
     while (true) {
-        system("clear");
+        if (!showonce) 
+            system("clear");
         if (returnCount) {
             for (int r = 0; r < returnCount; ++r)
                 console.WriteLine();
