@@ -4,7 +4,7 @@
 Show a clock in your tty.  
 ```
 usage: tty-clock [-hsc1Sb] [-C Color] [-t ticks] [-a nsticks]
-    -h         show this oage
+    -h         show this page
     -s         show second
     -c         center the clock when start
     -1         show once

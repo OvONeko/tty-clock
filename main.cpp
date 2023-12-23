@@ -102,7 +102,7 @@ int main(int argc, char** argv) {
         switch (opt) {
             case 'h':
                 std::cout << "usage: tty-clock [-hsc1Sb] [-C Color] [-t ticks] [-a nsticks]" << std::endl;
-                std::cout << "    -h         show this oage" << std::endl;
+                std::cout << "    -h         show this page" << std::endl;
                 std::cout << "    -s         show second" << std::endl;
                 std::cout << "    -c         center the clock when start" << std::endl;
                 std::cout << "    -1         show once" << std::endl;
