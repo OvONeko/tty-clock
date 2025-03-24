@@ -36,6 +36,9 @@ public:
     bool operator < (DateTime t);
     bool operator >= (DateTime t);
     bool operator <= (DateTime t);
+    DateTime operator + (ulong seconds);
+    DateTime operator - (ulong seconds);
+    bool isLeap();
 private:
     uint16_t Year;
     uint16_t Month;
@@ -43,6 +46,8 @@ private:
     uint16_t Hour;
     uint16_t Minute;
     uint16_t Second;
+    DateTime pls(DateTime u, ulong n);
+    DateTime mil(DateTime u, ulong n);
 protected:
 };
 

@@ -1,7 +1,10 @@
 
+#ifndef CONSOLE_CPP
+#define CONSOLE_CPP
+
 #include "console.h"
 #include <cstdio>
-#include <ostream>
+#include <iostream>
 #include <string>
 
 Console::Console() {
@@ -150,3 +153,5 @@ void Console::HideEcho() {
 void Console::ShowEcho() {
     initTermios(1);
 }
+
+#endif
